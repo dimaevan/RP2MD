@@ -1,20 +1,12 @@
 import argparse
-from urllib.parse import urlparse
+
+from html_parser import parse_and_save
 
 
 def run():
     args = arg_parsing()
     link = str(args.link).lower()
-    print(is_link_an_article(link))
-
-
-def is_link_an_article(link: str):
-    link = urlparse(link)
-    netloc = link.netloc
-    path = link.path
-    if (netloc == "realpython.com") and path:
-        return True
-    return False
+    parse_and_save(link)
 
 
 def arg_parsing() -> argparse.Namespace:
