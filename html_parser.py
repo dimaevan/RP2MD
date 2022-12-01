@@ -16,23 +16,32 @@ def open_link(link: str) -> str:
 
 def parse_main_text(html: str):
     soup = BeautifulSoup(html, 'lxml')
+    for a in soup.find_all("a", {"class": "small text-muted"}):
+        a.decompose()
     text = soup.find('div', {"class": "article-body"})
+
     return str(text)
 
 
-def save_file(text: str) -> None:
+def save_file(text: str, filename: str) -> None:
     try:
-        with open("output.md", "w") as file:
+        with open(filename+".md", "w") as file:
             file.write(text)
     except TypeError:
         print("Nothing found")
+
+
+def rename_output_file(name: str) -> str:
+    beauty_name = name.lower().replace("-", " ").replace("/", "").capitalize()
+    return beauty_name
 
 
 def parse_and_save(link: str) -> None:
     parsed_link = urlparse(link)
     netloc = parsed_link.netloc
     path = parsed_link.path
+    filename = rename_output_file(path)
 
     if is_link_an_article(netloc, path):
-        save_file(parse_main_text(open_link(link)))
+        save_file(parse_main_text(open_link(link)), filename)
 
